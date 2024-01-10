@@ -25,7 +25,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 // class Home extends StatelessWidget {
   final CalcFactory _factory = CalcFactory();
-  final ScrollController _scrollController = ScrollController();
   final DisplayRow _displayRowFormula = DisplayRow(
     TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.blue),
     EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -70,16 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
     rows.add(_displayRowFormula.createRow());
     rows.add(_displayRowResult.createRow());
 
-    // return SingleChildScrollView(
-    //   controller: _scrollController,
-    //   child: Center(
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: rows,
-    //     ),
-    //   )
-    // );
-
     List<Widget> btnRows = buttonDatas.map((e) => getButtonsRow(e)).toList();
     Widget bottmButtons = Expanded(
       child: Align(
@@ -92,6 +81,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     rows.add(bottmButtons);
 
+    if (_bannerAd != null) {
+      rows.add(Container(
+        height: _bannerAd!.size.height.toDouble(),
+      ));
+    }
+
     return Stack(
       children: [
         Center(
@@ -101,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         if (_bannerAd != null)
           Align(
-            alignment: Alignment.topCenter,
+            alignment: Alignment.bottomCenter,
             child: Container(
               width: _bannerAd!.size.width.toDouble(),
               height: _bannerAd!.size.height.toDouble(),

@@ -28,15 +28,15 @@ class CalcFactory {
           callback(complete: false, result: false, value: _prev);
         }
       } else if (type.isOperatorMiddle || type == CalcType.equal) {
-        if (type != CalcType.equal) {
-          _sign = type;
-        }
-
         if (_prev.length > 0 && _next.length > 0) {
           build();
           callback(complete: false, result: true, value: _result);
         } else {
           callback(complete: false, result: true, value: '');
+        }
+
+        if (type != CalcType.equal) {
+          _sign = type;
         }
       } else if (type == CalcType.ac) {
         reset();
