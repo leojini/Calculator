@@ -1,17 +1,18 @@
+import 'package:calculator/data/stream_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:calculator/data/calc_data.dart';
+import 'package:calculator/data/stream_data.dart';
 import 'dart:async';
-
-typedef PressedButtonCb = void Function(CalcType);
 
 class CalcButton {
   final CalcType type;
+  final StreamController streamController;
   final _textStyle = const TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
-  CalcButton(this.type);
+  CalcButton({required this.type, required this.streamController});
 
-  Widget createButton(PressedButtonCb callback) {
+  Widget createButton() {
     return Container(
       color: Colors.yellow,
       width: 70,
@@ -20,7 +21,7 @@ class CalcButton {
         child: Text(type.title, style: _textStyle),
         onPressed: () {
           // debugPrint('type aa: ${type.title}');
-          callback(type);
+          streamController.sink.add(StreamButtonData(type: StreamType.button, calcType: type));
         },
       ),
     );

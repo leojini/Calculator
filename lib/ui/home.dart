@@ -1,30 +1,28 @@
-// import 'dart:ffi';
 
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:calculator/data/calc_data.dart';
-import 'package:calculator/data/calc_factory.dart';
 import 'package:calculator/ui/widget/calc_button.dart';
 import 'package:calculator/ui/widget/display_row.dart';
-import 'dart:async';
+
+import 'package:calculator/data/calc_data.dart';
+import 'package:calculator/data/calc_factory.dart';
+import 'package:calculator/data/stream_data.dart';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:calculator/admob/ad_helper.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}): super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
-
-  // init google mobile ads
-  Future<InitializationStatus> _initGoogleMobileAds() {
-    return MobileAds.instance.initialize();
-  }
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-// class Home extends StatelessWidget {
-  final CalcFactory _factory = CalcFactory();
+  AdHelper? _adHelper;
+  CalcFactory? _factory;
+  StreamController _streamController = StreamController<StreamData>();
+
   final DisplayRow _displayRowFormula = DisplayRow(
     const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.blue),
     const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -33,63 +31,96 @@ class _HomeScreenState extends State<HomeScreen> {
     const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.pink),
     const EdgeInsets.fromLTRB(20, 0, 20, 0),
   );
-  BannerAd? _bannerAd;
-  InterstitialAd? _interstitialAd;
 
   int _clickCount = 0;
 
+  // init google mobile ads
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    return MobileAds.instance.initialize();
+  }
+
   @override
   void dispose() {
-    _bannerAd?.dispose();
-    _interstitialAd?.dispose();
+    _adHelper?.disposeAd();
     super.dispose();
   }
 
   @override
   void initState() {
-    initBannerAd();
+    _adHelper = AdHelper(streamController: _streamController);
+    _adHelper?.initBannerAd();
+
+    _factory = CalcFactory(streamController: _streamController);
+
+    bind();
+
+    super.initState();
   }
 
-  void initBannerAd() {
-    BannerAd(
-      adUnitId: AdHelper.bannerAdUnitId,
-      request: AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
+  void bind() {
+    _streamController.stream.listen((data) {
+      StreamData streamData = data as StreamData;
+      print('type : ${streamData.type}');
+      switch (streamData.type) {
+        case StreamType.setStateBannerAd:
           setState(() {
-            _bannerAd = ad as BannerAd;
+            _adHelper?.resetBannerAd((streamData as StreamAdData).adObject as BannerAd);
           });
-        },
-        onAdFailedToLoad: (ad, err) {
-          debugPrint('Failed to load a banner ad: ${err.message}');
-          ad.dispose();
-        },
-      ),
-    ).load();
+          break;
+
+        case StreamType.setStateInterstitalAd:
+          setState(() {
+            _adHelper?.resetInterstitialAd((streamData as StreamAdData).adObject as InterstitialAd);
+          });
+          break;
+
+        case StreamType.button:
+          _actionButton(streamData as StreamButtonData);
+          break;
+
+        case StreamType.calc:
+          _calcResult(streamData as StreamCalcData);
+          break;
+      }
+    });
   }
 
-  void initInterstitialAd() {
-    InterstitialAd.load(
-      adUnitId: AdHelper.interstitialAdUnitId,
-      request: AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (ad) {
-            ad.fullScreenContentCallback = FullScreenContentCallback(
-              onAdDismissedFullScreenContent: (ad) {
+  void _actionButton(StreamButtonData data) {
+    CalcType type = data.calcType;
+    _clickCount++;
+    if (_adHelper != null) {
+      if (_clickCount == 1) {
+        _adHelper?.initInterstitialAd();
+      } else if (_clickCount == 5) {
+        // interstitial ad
+        if (_adHelper?.interstitialAd != null) {
+          _adHelper?.interstitialAd?.show();
+        }
+        _clickCount = 0;
+      }
+    }
 
-              }
-            );
+    _factory?.process(type);
+  }
 
-            setState(() {
-              _interstitialAd = ad;
-            });
-          },
-          onAdFailedToLoad: (err) {
-            print('Failed to load an interstital ad: ${err.message}');
-          }
-      )
-    );
+  void _calcResult(StreamCalcData data) {
+    CalcType type = data.calcType;
+    if (data.complete) {
+      _displayRowFormula.remove();
+      _displayRowResult.remove();
+    } else {
+      _displayRowFormula.addText(type.title);
+      if (data.result) {
+        _displayRowResult.remove();
+        _displayRowResult.addText(_factory?.getResult() ?? '');
+        _displayRowResult.nextRemove = (type == CalcType.equal);
+      } else if (type.isOperatorMiddle) {
+
+      } else {
+        _displayRowResult.remove();
+        _displayRowResult.addText(data.value);
+      }
+    }
   }
 
   @override
@@ -112,9 +143,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     rows.add(bottmButtons);
 
-    if (_bannerAd != null) {
+    if (_adHelper?.bannerAd != null) {
       rows.add(Container(
-        height: _bannerAd!.size.height.toDouble(),
+        height: _adHelper?.bannerAd!.size.height.toDouble(),
       ));
     }
 
@@ -122,16 +153,16 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Center(
           child: Column(
-          children: rows,
+            children: rows,
+          ),
         ),
-        ),
-        if (_bannerAd != null)
+        if (_adHelper != null && _adHelper?.bannerAd != null)
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              width: _bannerAd!.size.width.toDouble(),
-              height: _bannerAd!.size.height.toDouble(),
-              child: AdWidget(ad: _bannerAd!),
+              width: _adHelper?.bannerAd!.size.width.toDouble(),
+              height: _adHelper?.bannerAd!.size.height.toDouble(),
+              child: _adHelper?.getBannerAdWidget(),
             ),
           ),
       ],
@@ -139,44 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget getButtonsRow(List<CalcType> btnDatas) {
-    PressedButtonCb callback = (CalcType type) {
-
-      _clickCount++;
-      if (_clickCount == 1) {
-        initInterstitialAd();
-      } else if (_clickCount == 5) {
-        // interstitial ad
-        if (_interstitialAd != null) {
-          _interstitialAd?.show();
-        }
-        _clickCount = 0;
-      }
-
-      _factory.process(type, ({
-        bool complete = false,
-        bool result = false,
-        String value= '',
-      }) {
-        if (complete) {
-          _displayRowFormula.remove();
-          _displayRowResult.remove();
-        } else {
-          _displayRowFormula.addText(type.title);
-          if (result) {
-            _displayRowResult.remove();
-            _displayRowResult.addText(_factory.getResult());
-            _displayRowResult.nextRemove = (type == CalcType.equal);
-          } else if (type.isOperatorMiddle) {
-
-          } else {
-            _displayRowResult.remove();
-            _displayRowResult.addText(value);
-          }
-        }
-      });
-    };
-
-    List<Widget> buttons = btnDatas.map((e) => CalcButton(e).createButton(callback)).toList();
+    List<Widget> buttons = btnDatas.map((e) => CalcButton(type: e, streamController: _streamController).createButton()).toList();
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: buttons,

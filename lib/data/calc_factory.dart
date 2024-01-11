@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:calculator/data/stream_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:calculator/data/calc_data.dart';
 
@@ -6,33 +9,36 @@ typedef ProcessResultCB = void Function({required bool complete,
                                           required String value});
 
 class CalcFactory {
+  final StreamController streamController;
   CalcType _sign = CalcType.empty; // 입력된 기호 CalcType
   String _result = ''; // 결과
   String _prev = '', _next = '';
 
-  void process(CalcType type, ProcessResultCB callback) {
+  CalcFactory({required this.streamController});
+
+  void process(CalcType type) {
     if (_prev.length == 0) {
       // 첫 번째 입력값 숫자인 경우
       if (type.isNumber) {
         _prev = getDoubleExceptDotZero(type.title);
-        callback(complete: false, result: false, value: _prev);
+        streamController.sink.add(StreamCalcData(type: StreamType.calc, calcType: type, complete: false, result: false, value: _prev));
       }
     } else {
       // 두 번째 이상의 입력값 숫자인 경우
       if (type.isNumber) {
         if (_sign != CalcType.empty) {
           _next = getDoubleExceptDotZero('$_next${type.title}');
-          callback(complete: false, result: false, value: _next);
+          streamController.sink.add(StreamCalcData(type: StreamType.calc, calcType: type, complete: false, result: false, value: _next));
         } else {
           _prev = getDoubleExceptDotZero('$_prev${type.title}');
-          callback(complete: false, result: false, value: _prev);
+          streamController.sink.add(StreamCalcData(type: StreamType.calc, calcType: type, complete: false, result: false, value: _prev));
         }
       } else if (type.isOperatorMiddle || type == CalcType.equal) {
         if (_prev.length > 0 && _next.length > 0) {
           build();
-          callback(complete: false, result: true, value: _result);
+          streamController.sink.add(StreamCalcData(type: StreamType.calc, calcType: type, complete: false, result: true, value: _result));
         } else {
-          callback(complete: false, result: true, value: '');
+          streamController.sink.add(StreamCalcData(type: StreamType.calc, calcType: type, complete: false, result: true, value: ''));
         }
 
         if (type != CalcType.equal) {
@@ -40,7 +46,7 @@ class CalcFactory {
         }
       } else if (type == CalcType.ac) {
         reset();
-        callback(complete: true, result: false, value: ''); // 초기화
+        streamController.sink.add(StreamCalcData(type: StreamType.calc, calcType: type, complete: true, result: true, value: '')); // 초기화
       }
     }
   }

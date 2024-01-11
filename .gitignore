@@ -247,3 +247,16 @@ build/ios/Pods.build/Release-iphonesimulator/Google-Mobile-Ads-SDK.build/dgph~
 build/ios/Pods.build/Release-iphonesimulator/Google-Mobile-Ads-SDK.build/dgph
 build/ios/Pods.build/Release-iphonesimulator/Flutter.build/dgph~
 build/ios/Pods.build/Release-iphonesimulator/Flutter.build/dgph
+build/app/outputs/flutter-apk/app-debug.apk.sha1
+build/app/outputs/flutter-apk/app-debug.apk
+build/app/outputs/apk/debug/app-debug.apk
+build/app/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt
+build/app/intermediates/flutter/debug/flutter_build.d
+build/app/intermediates/flutter/debug/flutter_assets/kernel_blob.bin
+build/app/intermediates/compressed_assets/debug/out/assets/flutter_assets/kernel_blob.bin.jar
+build/app/intermediates/assets/debug/flutter_assets/kernel_blob.bin
+build/a46f85df11ed3d278105635939097b84.cache.dill.track.dill
+.flutter-plugins-dependencies
+.dart_tool/flutter_build/7905c7ae883831631e77e3cd62a8d574/kernel_snapshot.stamp
+.dart_tool/flutter_build/7905c7ae883831631e77e3cd62a8d574/kernel_snapshot.d
+.dart_tool/flutter_build/7905c7ae883831631e77e3cd62a8d574/.filecache
