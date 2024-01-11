@@ -26,23 +26,31 @@ class _HomeScreenState extends State<HomeScreen> {
 // class Home extends StatelessWidget {
   final CalcFactory _factory = CalcFactory();
   final DisplayRow _displayRowFormula = DisplayRow(
-    TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.blue),
-    EdgeInsets.fromLTRB(20, 20, 20, 0),
+    const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.blue),
+    const EdgeInsets.fromLTRB(20, 20, 20, 0),
   );
   final DisplayRow _displayRowResult = DisplayRow(
-    TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.pink),
-    EdgeInsets.fromLTRB(20, 0, 20, 0),
+    const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.pink),
+    const EdgeInsets.fromLTRB(20, 0, 20, 0),
   );
   BannerAd? _bannerAd;
+  InterstitialAd? _interstitialAd;
+
+  int _clickCount = 0;
 
   @override
   void dispose() {
     _bannerAd?.dispose();
+    _interstitialAd?.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
+    initBannerAd();
+  }
+
+  void initBannerAd() {
     BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
       request: AdRequest(),
@@ -59,6 +67,29 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     ).load();
+  }
+
+  void initInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (ad) {
+            ad.fullScreenContentCallback = FullScreenContentCallback(
+              onAdDismissedFullScreenContent: (ad) {
+
+              }
+            );
+
+            setState(() {
+              _interstitialAd = ad;
+            });
+          },
+          onAdFailedToLoad: (err) {
+            print('Failed to load an interstital ad: ${err.message}');
+          }
+      )
+    );
   }
 
   @override
@@ -109,7 +140,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget getButtonsRow(List<CalcType> btnDatas) {
     PressedButtonCb callback = (CalcType type) {
-      // print('pressed button callback');
+
+      _clickCount++;
+      if (_clickCount == 1) {
+        initInterstitialAd();
+      } else if (_clickCount == 5) {
+        // interstitial ad
+        if (_interstitialAd != null) {
+          _interstitialAd?.show();
+        }
+        _clickCount = 0;
+      }
+
       _factory.process(type, ({
         bool complete = false,
         bool result = false,
