@@ -73,8 +73,8 @@ enum CalcType {
 }
 
 class CalcData {
-  // 버튼 각 행단위 버튼 리스트를 반환한다.
-  static List<List<CalcType>> getOrderButtons() {
+  // 버튼 각 행단위 config를 반환한다.
+  static List<List<CalcType>> getOrderButtonsConfig() {
     return [
       [CalcType.ac, CalcType.empty, CalcType.empty, CalcType.plus],
       [CalcType.seven, CalcType.eight, CalcType.nine, CalcType.minus],

@@ -53,6 +53,7 @@ class AdHelper {
     return AdWidget(ad: _bannerAd!);
   }
 
+  // 배너 광고 인스턴스 생성
   void initBannerAd() {
     BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
@@ -77,10 +78,12 @@ class AdHelper {
     ).load();
   }
 
+  // 배너 광고 인스턴스 설정
   void resetBannerAd(BannerAd ad) {
     _bannerAd = ad;
   }
 
+  // 전면 광고 인스턴스 생성
   void initInterstitialAd() {
     InterstitialAd.load(
         adUnitId: AdHelper.interstitialAdUnitId,
@@ -105,6 +108,7 @@ class AdHelper {
     );
   }
 
+  // 전면 광고 인스턴스 설정
   void resetInterstitialAd(InterstitialAd ad) {
     _interstitialAd = ad;
   }

@@ -16,6 +16,7 @@ class CalcFactory {
 
   CalcFactory({required this.streamController});
 
+  // type에 따라 계산기 로직을 수행한 후 streamController에 해당 이벤트를 추가한다.
   void process(CalcType type) {
     if (_prev.length == 0) {
       // 첫 번째 입력값 숫자인 경우
