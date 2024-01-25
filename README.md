@@ -1,16 +1,11 @@
-# calculator
 
-A new Flutter project.
+계산기
 
-## Getting Started
+1. 기본 사칙연산을 보여주는 계산기앱
+   - 홈화면 banner 광고를 보여준다.
+   - 일정 클릭(10번) 횟수를 도달했을 때 interstial 광고를 보여준다.
+2. 언어: Dart, Flutter
+3. 개발환경: Android Studio
+4. 광고: Admob(banner, interstial)
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
