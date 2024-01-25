@@ -25,4 +25,5 @@
 
    - AC 버튼 눌렀을 때 설정한 클릭 횟수를 도달했을 때 interstial(전면) 광고 추가
      
-     
+     ![image](https://github.com/leojini/Calculator/assets/17540345/f5bbd92d-e6a7-4881-bb21-a579d3d4872d)
+
