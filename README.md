@@ -5,11 +5,10 @@
 ![image](https://github.com/leojini/Calculator/assets/17540345/10196a13-0b08-4b12-b168-d13122a17f90)
 
 
-    
-1. 기본 사칙연산을 보여주는 계산기앱
+1. 언어: Dart, Flutter    
+2. 기본 사칙연산을 보여주는 계산기앱
    - 홈화면 banner(배너) 광고를 보여준다.
    - AC 버튼 눌렀을 때 설정한 클릭 횟수를 도달했을 때 interstial(전면) 광고를 보여준다.
-2. 언어: Dart, Flutter
 3. 개발환경: Android Studio
 4. 광고 관련 라이브러리: Admob(banner, interstial)
 5. Admob 라이브러리 추가 방법
