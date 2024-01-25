@@ -20,12 +20,12 @@
 
      ![image](https://github.com/leojini/Calculator/assets/17540345/8eb8fa0a-6a44-4e17-9916-59bf2086dfab)
 
-   - 홈화면에 banner(배너) 광고 추가
+   - 홈화면에 banner(배너) 광고 추가한다.
      : 배너 광고 사이즈만큼 홈화면 하단에 레이아웃을 잡아서 추가한다.
 
      ![image](https://github.com/leojini/Calculator/assets/17540345/f4ee4eb3-1a5f-4b76-8651-eb52a82cb1a7)
 
-   - AC 버튼 눌렀을 때 설정한 클릭 횟수를 도달했을 때 interstial(전면) 광고 추가
+   - AC 버튼 눌렀을 때 설정한 클릭 횟수를 도달했을 때 interstial(전면) 광고 추가한다.
      
      ![image](https://github.com/leojini/Calculator/assets/17540345/f5bbd92d-e6a7-4881-bb21-a579d3d4872d)
 
