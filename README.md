@@ -1,5 +1,5 @@
 
-![image](https://github.com/leojini/Calculator/assets/17540345/2dff7e32-b865-49b7-8fdb-71a3942420e0)  ![image](https://github.com/leojini/Calculator/assets/17540345/10196a13-0b08-4b12-b168-d13122a17f90)
+![image](https://github.com/leojini/Calculator/assets/17540345/2dff7e32-b865-49b7-8fdb-71a3942420e0)        ![image](https://github.com/leojini/Calculator/assets/17540345/10196a13-0b08-4b12-b168-d13122a17f90)
 
 계산기
 
